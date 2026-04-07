@@ -1,0 +1,77 @@
+body{
+    background-color: #f1f3f4;
+    overflow-x: hidden;
+}
+
+#form-area{
+    width: 50%;
+}
+
+#trigger-form, #trigger-form, #form{
+    background-color: #ffffff;
+}
+
+#trigger-form{
+    height: 50px;
+}
+
+#fill-title{
+    outline: none;
+    font-size: 20px;
+}
+
+#fill-content{
+    outline: none;
+    resize: none;
+    min-height: 10px;
+    font-size: 16px;
+}
+
+#notes-area {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+}
+
+.notes{
+    background-color: #ffffff;
+    height: 200px;
+    margin: 10px;
+    cursor: pointer;
+}
+
+#noteTitle{
+    font-size: 20px;
+}
+
+#noteContent{
+    font-size: 16px;
+}
+
+/* Modal */
+#fill-title-edit{
+    outline: none;
+    font-size: 20px;
+}
+
+#fill-content-edit{
+    outline: none;
+    resize: none;
+    min-height: 20px;
+    font-size: 16px;
+}
+
+#note-title{
+    font-size: 20px;
+}
+#note-content{
+    font-size: 16px;
+}
+
+.modal-body{
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+#footer-modal{
+    padding-right: 1rem;
+}
