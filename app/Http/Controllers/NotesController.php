@@ -9,10 +9,14 @@ class NotesController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $notes = Note::latest('updated_at')->get();
-            return response()->json($notes);
+        $search = $request->search;
+        $notes = Note::when($search, function($query) use ($search) {
+            $query->where('title', 'like', "%$search%")
+                ->orWhere('content', 'like', "%$search%");
+        })->latest('updated_at')->get();
+        return response()->json($notes);
     }
 
     /**

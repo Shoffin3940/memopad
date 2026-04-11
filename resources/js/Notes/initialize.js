@@ -1,4 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import * as bootstrap from 'bootstrap';
 import '../../css/Notes/notes.css'
 import axios from 'axios';
@@ -70,6 +71,16 @@ document.addEventListener('DOMContentLoaded', async()=>{
         const id = document.getElementById('editModal').dataset.activeId;
         update(id);
     })
+
+    //Searching
+    let searchTimeout = null;
+    const searchInput =  document.getElementById('search');
+    searchInput.addEventListener('input', () => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            fetchNotes(searchInput.value);
+        }, 500);
+    })
 })
 
 async function store(){
@@ -99,11 +110,11 @@ async function store(){
         });
 }
 
-async function fetchNotes(){
+async function fetchNotes(keyword = '') {
     document.getElementById('notes-area').innerHTML = '';
-    const response = await axios.get('api/notes');
+    const response = await axios.get(`api/notes?search=${keyword}`);
     const notes = response.data;
-    notes.forEach(note => renderNotes(note))
+    notes.forEach(note => renderNotes(note));
 }
 
 async function renderNotes(note){

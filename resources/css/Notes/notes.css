@@ -1,6 +1,26 @@
-body{
+html, body{
     background-color: #f1f3f4;
     overflow-x: hidden;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#nav-top-side{
+    background-color: #ffffff;
+    border-bottom: 1px solid #c8cacb;
+    width: 100%;
+}
+#search {
+    width: 700px;
+    height: 50px;
+    border: none;
+    background-color: #f1f3f4;
+}
+#search:focus {
+    outline: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2) !important;
+    background-color: #ffffff;
 }
 
 #form-area{

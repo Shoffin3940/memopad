@@ -6,13 +6,19 @@
     <title>Notes</title>
 </head>
 <body>
-    <div class="search-wrapper"></div>
-    <div class="row p-3">
+    <div id="nav-top-side" class="d-flex align-items-center justify-content-between p-2 shadow-sm">
+        <div id="logo-wrapper"></div>
+        <div id="search-wrapper" class="mx-auto">
+             <input class="form-control search mb-0" id="search" type="search" placeholder="Cari catatan ..." autocomplete="off">
+        </div>
+        <div id="night-mode"></div>
+    </div>
+    <div class="row">
         {{-- Navigation --}}
-        <div id="nav" class="col-2"></div>
+        <div id="nav-left-side" class="col-2"></div>
 
         {{-- Content --}}
-        <div id="content-wrapper" class="col-10">
+        <div id="content-wrapper" class="col-10 pt-3">
             <div id="form-area" class="mx-auto text-center">
                 <div id="trigger-form" class="d-flex align-items-center p-3 text-start rounded shadow-sm">Masukkan teks...</div>
                 <div id="form" class="d-none rounded shadow-sm">
