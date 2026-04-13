@@ -6,7 +6,7 @@
     <title>Notes</title>
 </head>
 <body>
-    <div id="nav-top-side" class="d-flex align-items-center justify-content-between p-2 shadow-sm">
+    <div id="nav-top-side" class="d-flex align-items-center justify-content-between p-2">
         <div id="logo-wrapper"></div>
         <div id="search-wrapper" class="mx-auto">
              <input class="form-control search mb-0" id="search" type="search" placeholder="Cari catatan ..." autocomplete="off">
@@ -15,7 +15,15 @@
     </div>
     <div class="row">
         {{-- Navigation --}}
-        <div id="nav-left-side" class="col-2"></div>
+        <div id="nav-left-side" class="col-2">
+            <p>1</p>
+            <p>1</p>
+            <p>1</p>
+            <p>1</p>
+            <p>1</p>
+            <p>1</p>
+            <p>1</p>
+        </div>
 
         {{-- Content --}}
         <div id="content-wrapper" class="col-10 pt-3">
@@ -35,13 +43,14 @@
     <div class="modal fade" id="editModal">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-body">
+                <div class="modal-header border-0 p-0"></div>
+                <div class="modal-body pt-3 pb-0">
                     <input id="fill-title-edit" class="d-block w-100 border-0 ps-4 pe-4 edit-content" type="text" name="title" placeholder="Judul">
                     <textarea id="fill-content-edit" class="d-block w-100 border-0 ps-4 pe-4 pb-1 edit-content" name="content" placeholder="Buat catatan..."></textarea>
-                    <div id="footer-modal" class="d-flex justify-content-end">
-                        <button type="button" id="btn-delete" class="btn btn-danger">Delete</button>
-                        <button type="button" id="btn-close-update" class="btn btn-sm">Tutup</button>
-                    </div>
+                </div>
+                <div class="modal-footer border-0" id="footer-modal">
+                    <button type="button" id="btn-delete" class="btn btn-danger">Delete</button>
+                    <button type="button" id="btn-close-update" class="btn btn-sm">Tutup</button>
                 </div>
             </div>
         </div>

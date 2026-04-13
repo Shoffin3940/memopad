@@ -1,15 +1,46 @@
-html, body{
-    background-color: #f1f3f4;
+html {
     overflow-x: hidden;
+    width: 100%;
+}
+
+body {
+    background-color: #f1f3f4;
     width: 100%;
     margin: 0;
     padding: 0;
 }
 
+.row {
+    overflow: visible !important;
+    min-height: 100vh;
+}
+
 #nav-top-side{
     background-color: #ffffff;
     border-bottom: 1px solid #c8cacb;
-    width: 100%;
+    width: 100vw;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+#nav-left-side {
+    position: fixed;
+    top: 66.95px;
+    left: 0;
+    height: calc(100vh - 66.95px);
+    width: 16.666%;
+    overflow-y: auto;
+    /* background-color: aqua; */
+    z-index: 99;
+}
+
+#content-wrapper {
+    margin-left: 16.666%;
+}
+
+.shadow-custom {
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
 }
 #search {
     width: 700px;
@@ -54,18 +85,20 @@ html, body{
 
 .notes{
     background-color: #ffffff;
-    height: 200px;
+    height: 250px;
     margin: 10px;
     cursor: pointer;
+    overflow: hidden;
 }
 
-#noteTitle{
-    font-size: 20px;
+#note-content {
+    display: -webkit-box;
+    -webkit-line-clamp: 7;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    white-space: pre-wrap;
 }
 
-#noteContent{
-    font-size: 16px;
-}
 
 /* Modal */
 #fill-title-edit{
@@ -76,8 +109,9 @@ html, body{
 #fill-content-edit{
     outline: none;
     resize: none;
-    min-height: 20px;
     font-size: 16px;
+    min-height: 20px;
+    overflow-y: auto;
 }
 
 #note-title{
@@ -87,7 +121,18 @@ html, body{
     font-size: 16px;
 }
 
-.modal-body{
+.modal-dialog {
+    max-width: 500px;
+}
+
+.modal-content {
+    height: auto;
+     overflow: hidden;
+}
+
+.modal-body {
+    max-height: 60vh;
+    overflow-y: auto;
     padding-left: 0px;
     padding-right: 0px;
 }

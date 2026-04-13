@@ -60,7 +60,14 @@ document.addEventListener('DOMContentLoaded', async()=>{
         destroy(id);
     })    
     document.getElementById('editModal').addEventListener('shown.bs.modal', () => {
-        document.getElementById('fill-content-edit').focus();
+        const fillContentEdit = document.getElementById('fill-content-edit');
+        setTimeout(() => {
+            fillContentEdit.style.height = 'auto';
+            fillContentEdit.style.height = fillContentEdit.scrollHeight + 'px';
+            console.log('scrollHeight:', fillContentEdit.scrollHeight);
+        }, 50);
+        fillContentEdit.focus();
+
     })
 
     document.getElementById('editModal').addEventListener('hide.bs.modal', () => {
@@ -80,6 +87,15 @@ document.addEventListener('DOMContentLoaded', async()=>{
         searchTimeout = setTimeout(() => {
             fetchNotes(searchInput.value);
         }, 500);
+    })
+
+    window.addEventListener('scroll', () => {
+        const navTop = document.getElementById('nav-top-side');
+        if(window.scrollY > 10) {
+            navTop.classList.add('shadow-custom');
+        } else {
+            navTop.classList.remove('shadow-custom');
+        }
     })
 })
 
