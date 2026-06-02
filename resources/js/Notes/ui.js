@@ -2,6 +2,7 @@ import { getNotes, storeNote, updateNote, deleteNote } from './api';
 import { initTheme } from './theme';
 import { initPomodoro } from './pomodoro';
 import { initReminders, checkReminders } from './reminders';
+import { createElement } from './helper';
 import * as bootstrap from 'bootstrap';
 
 // Application State
@@ -119,13 +120,9 @@ function renderSidebarLabels(notes) {
         if (title) title.classList.remove('d-none');
     }
 
-    labels.forEach(label => {
-        const item = document.createElement('div');
-        item.className = `sidebar-item ${activeLabel === label ? 'active' : ''}`;
-        item.dataset.view = 'label';
-        item.dataset.label = label;
-        item.innerHTML = `<i class="bi bi-tag"></i> <span>${escapeHTML(label)}</span>`;
-        
+    labels.forEach( async label => {
+        const item = await createElement({ element: 'div', elmClass: `sidebar-item ${activeLabel === label ? 'active' : ''}`, content:`<i class="bi bi-tag"></i> <span>${escapeHTML(label)}</span>`, dataset: { view: 'label', label: label}})
+       
         item.addEventListener('click', () => {
             document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
             item.classList.add('active');
@@ -280,7 +277,7 @@ export async function refreshNotes() {
         if (pinnedNotes.length > 0 && activeView !== 'archive' && activeView !== 'trash') {
             pinnedTitle.classList.remove('d-none');
             othersTitle.classList.remove('d-none');
-            pinnedNotes.forEach(note => pinnedArea.appendChild(createNoteCard(note)));
+            pinnedNotes.forEach(async note => pinnedArea.appendChild( await createNoteCard(note)));
         } else {
             pinnedTitle.classList.add('d-none');
             othersTitle.classList.add('d-none');
@@ -291,7 +288,7 @@ export async function refreshNotes() {
         if (otherNotes.length > 0 || pinnedNotes.length > 0) {
             if (emptyState) emptyState.classList.add('d-none');
             notesArea.classList.remove('d-none');
-            otherNotes.forEach(note => notesArea.appendChild(createNoteCard(note)));
+            otherNotes.forEach(async note => notesArea.appendChild( await createNoteCard(note)));
         } else {
             if (emptyState) emptyState.classList.remove('d-none');
             notesArea.classList.add('d-none');
@@ -305,80 +302,72 @@ export async function refreshNotes() {
     }
 }
 
-function createNoteCard(note) {
-    const card = document.createElement('div');
-    card.className = 'notes rounded col-3 shadow-sm';
-    if (note.color && note.color !== 'white') {
-        card.classList.add(`note-color-${note.color}`);
-    }
+async function createNoteCard(note) {
+    const card = await createElement({
+        element: 'div',
+        elmClass : `notes rounded col-3 shadow-sm ${note.color && note.color !== 'white' ? 'note-color-'+ note.color : '' }`,
+    })
 
     // Pin Button (top right, hide in archive/trash)
     if (activeView !== 'archive' && activeView !== 'trash') {
-        const pinBtn = document.createElement('button');
-        pinBtn.className = `pin-btn ${note.is_pinned ? 'pinned' : ''}`;
-        pinBtn.innerHTML = `<i class="bi bi-pin-angle${note.is_pinned ? '-fill' : ''}"></i>`;
-        pinBtn.title = note.is_pinned ? 'Lepas Sematan' : 'Sematkan Catatan';
+        const pinBtn = await createElement({
+            element: 'button',
+            elmClass: `pin-btn ${note.is_pinned ? 'pinned' : ''}`, 
+            content: `<i class="bi bi-pin-angle${note.is_pinned ? '-fill' : ''}"></i>`,
+            attributes: {title : note.is_pinned ? 'Lepas Sematan' : 'Sematkan Catatan'}
+        });
+
         pinBtn.addEventListener('click', async (e) => {
             e.stopPropagation();
             await updateNote(note.id, { is_pinned: !note.is_pinned });
             refreshNotes();
         });
-        card.appendChild(pinBtn);
+
+        card.appendChild(pinBtn)
     }
 
-    // Text content container
-    const textContainer = document.createElement('div');
-    textContainer.style.flexGrow = '1';
+    const textContainer = await createElement({
+        element: 'div',
+        style:{flexGrow: 1}
+    })
 
     if (note.title) {
-        const titleEl = document.createElement('div');
-        titleEl.id = 'note-title';
-        titleEl.textContent = note.title;
+        const titleEl = await createElement({element: 'div', id: 'note-title', content: note.title });
         textContainer.appendChild(titleEl);
     }
 
     if (note.content) {
-        const contentEl = document.createElement('div');
-        contentEl.id = 'note-content';
-        contentEl.textContent = note.content;
+        const contentEl = await createElement({element: 'div', id: 'note-content', content: note.content });
         textContainer.appendChild(contentEl);
     }
+
     card.appendChild(textContainer);
 
     // Footer with Chips & Action Tools
-    const footer = document.createElement('div');
-    footer.className = 'note-footer';
+    const footer = await createElement({ element: 'div', elmClass:'note-footer' })
 
     // Chips
-    const chipsContainer = document.createElement('div');
-    chipsContainer.className = 'chip-container';
+    const chipsContainer = await createElement({ element: 'div', elmClass: 'chip-container' })
 
     if (note.reminder_at) {
         const isPast = new Date(note.reminder_at) <= new Date();
-        const alarmChip = document.createElement('span');
-        alarmChip.className = `note-chip ${isPast ? 'alarm-active' : ''}`;
-        alarmChip.innerHTML = `<i class="bi bi-bell"></i> <span>${formatRelativeTime(note.reminder_at)}</span>`;
+        const alarmChip = await createElement({ element: 'span', elmClass: `note-chip ${isPast ? 'alarm-active' : ''}`, content: `<i class="bi bi-bell"></i> <span>${formatRelativeTime(note.reminder_at)}</span>` });
         chipsContainer.appendChild(alarmChip);
     }
 
     if (note.label) {
-        const labelChip = document.createElement('span');
-        labelChip.className = 'note-chip';
-        labelChip.innerHTML = `<i class="bi bi-tag"></i> <span>${escapeHTML(note.label)}</span>`;
+        const labelChip = await createElement({ element: 'span', elmClass: 'note-chip', content: `<i class="bi bi-tag"></i> <span>${escapeHTML(note.label)}</span>`});
         chipsContainer.appendChild(labelChip);
     }
+
     footer.appendChild(chipsContainer);
 
     // Card Action Tools
-    const tools = document.createElement('div');
-    tools.className = 'note-card-tools';
+    const tools = await createElement({ element: 'div', elmClass: 'note-card-tools'});
 
     if (!note.is_trashed) {
         // Palette
-        const paletteBtn = document.createElement('button');
-        paletteBtn.className = 'tool-btn';
-        paletteBtn.innerHTML = '<i class="bi bi-palette"></i>';
-        paletteBtn.title = 'Ubah warna';
+        const paletteBtn = await createElement({ element: 'button', elmClass: 'tool-btn', content: '<i class="bi bi-palette"></i>', attributes: {title: 'Ubah warna'}});
         paletteBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             toggleColorPopover(paletteBtn, async (colorName) => {
@@ -389,10 +378,7 @@ function createNoteCard(note) {
         tools.appendChild(paletteBtn);
 
         // Label Tag
-        const labelBtn = document.createElement('button');
-        labelBtn.className = 'tool-btn';
-        labelBtn.innerHTML = '<i class="bi bi-tag"></i>';
-        labelBtn.title = 'Ubah label';
+        const labelBtn = await createElement({ element: 'button', elmClass: 'tool-btn', content: '<i class="bi bi-tag"></i>', attributes: {title: 'Ubah label'}});
         labelBtn.addEventListener('click', async (e) => {
             e.stopPropagation();
             const newLabel = prompt('Masukkan label catatan:', note.label || '');
@@ -404,10 +390,7 @@ function createNoteCard(note) {
         tools.appendChild(labelBtn);
 
         // Archive
-        const archiveBtn = document.createElement('button');
-        archiveBtn.className = 'tool-btn';
-        archiveBtn.innerHTML = `<i class="bi bi-archive${note.is_archived ? '-fill' : ''}"></i>`;
-        archiveBtn.title = note.is_archived ? 'Pindahkan ke Catatan' : 'Arsip';
+        const archiveBtn = await createElement({ element: 'button', elmClass: 'tool-btn', content: `<i class="bi bi-archive${note.is_archived ? '-fill' : ''}"></i>`, attributes: {title: `${note.is_archived ? 'Pindahkan ke Catatan' : 'Arsip'}`}});
         archiveBtn.addEventListener('click', async (e) => {
             e.stopPropagation();
             await updateNote(note.id, { is_archived: !note.is_archived });
@@ -416,10 +399,7 @@ function createNoteCard(note) {
         tools.appendChild(archiveBtn);
 
         // Trash
-        const trashBtn = document.createElement('button');
-        trashBtn.className = 'tool-btn';
-        trashBtn.innerHTML = '<i class="bi bi-trash"></i>';
-        trashBtn.title = 'Hapus';
+        const trashBtn = await createElement({ element: 'button', elmClass: 'tool-btn', content: '<i class="bi bi-trash"></i>', attributes: {title: 'Hapus'}});
         trashBtn.addEventListener('click', async (e) => {
             e.stopPropagation();
             // Move to trash
@@ -429,10 +409,7 @@ function createNoteCard(note) {
         tools.appendChild(trashBtn);
     } else {
         // Restore
-        const restoreBtn = document.createElement('button');
-        restoreBtn.className = 'btn btn-sm btn-outline-secondary py-1 px-2 border-0';
-        restoreBtn.innerHTML = '<i class="bi bi-arrow-counterclockwise"></i> Pulihkan';
-        restoreBtn.title = 'Pulihkan Catatan';
+        const restoreBtn = await createElement({ element: 'button', elmClass: 'btn btn-sm btn-outline-secondary py-1 px-2 border-0', content: '<i class="bi bi-arrow-counterclockwise"></i>', attributes: {title: 'Pulihkan Catatan'}});
         restoreBtn.addEventListener('click', async (e) => {
             e.stopPropagation();
             await updateNote(note.id, { is_trashed: false });
@@ -441,10 +418,7 @@ function createNoteCard(note) {
         tools.appendChild(restoreBtn);
 
         // Delete Permanently
-        const deletePermBtn = document.createElement('button');
-        deletePermBtn.className = 'btn btn-sm btn-outline-danger py-1 px-2 border-0 ms-2';
-        deletePermBtn.innerHTML = '<i class="bi bi-trash-fill"></i> Hapus';
-        deletePermBtn.title = 'Hapus Permanen';
+        const deletePermBtn = await createElement({ element: 'button', elmClass: 'btn btn-sm btn-outline-danger py-1 px-2 border-0 ms-2', content: '<i class="bi bi-trash-fill"></i> Hapus', attributes: {title: 'Hapus Permanen'}});
         deletePermBtn.addEventListener('click', async (e) => {
             e.stopPropagation();
             if (confirm('Hapus catatan ini secara permanen? Tindakan ini tidak bisa dibatalkan.')) {
@@ -471,7 +445,7 @@ function createNoteCard(note) {
 // -------------------------------------------------------------
 let activePopover = null;
 
-function toggleColorPopover(triggerBtn, selectCallback) {
+async function toggleColorPopover(triggerBtn, selectCallback) {
     if (activePopover) {
         activePopover.remove();
         if (activePopover.trigger === triggerBtn) {
@@ -480,15 +454,10 @@ function toggleColorPopover(triggerBtn, selectCallback) {
         }
     }
 
-    const popover = document.createElement('div');
-    popover.className = 'color-picker-popover';
-    popover.trigger = triggerBtn;
+    const popover = await createElement({ element: 'div', elmClass: 'color-picker-popover', attributes: {trigger:triggerBtn}});
 
-    colorPalette.forEach(color => {
-        const opt = document.createElement('div');
-        opt.className = 'color-option';
-        opt.style.backgroundColor = color.value;
-        opt.title = color.label;
+    colorPalette.forEach( async color => {
+        const opt = await createElement({ element: 'div', elmClass: 'color-option', attributes: {style: {backgroundColor: color.value}, title: color.label}})
         opt.addEventListener('click', (e) => {
             e.stopPropagation();
             selectCallback(color.name);
