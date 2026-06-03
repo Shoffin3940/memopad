@@ -352,12 +352,14 @@ body {
     position: absolute;
     top: 8px;
     right: 8px;
+    width: 36px;
+    height: 36px;
     background: none;
     border: none;
     color: var(--text-secondary);
     font-size: 16px;
     padding: 6px;
-    border-radius: 50%;
+    border-radius: 500%;
     cursor: pointer;
     opacity: 0;
     transition: opacity 0.2s, background-color 0.2s, color 0.2s;
